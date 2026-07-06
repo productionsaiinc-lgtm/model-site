@@ -1,0 +1,78 @@
+<!-- 
+  PAYMENT INTEGRATION TEMPLATE
+  Replace the payment button URLs below with your actual processor credentials
+  
+  This template shows how to integrate CCBill or Segpay payment buttons
+-->
+
+<!-- CCBILL INTEGRATION EXAMPLE -->
+<!-- 
+  To use CCBill:
+  1. Get your merchant account from https://www.ccbill.com/
+  2. Replace MERCHANT_ID and SUBACCOUNT_ID with your credentials
+  3. Replace the URL in the button onclick with your CCBill payment link
+-->
+<button onclick="window.location.href='https://checkout.ccbill.com/checkout?merchant=MERCHANT_ID&subaccount=SUBACCOUNT_ID&formname=Pro%20Membership&price=29.00&period=1&rebillingfrequency=1&rebillingtype=unlimited&currency=840'">
+  Subscribe to Pro - $29/month
+</button>
+
+<!-- SEGPAY INTEGRATION EXAMPLE -->
+<!-- 
+  To use Segpay:
+  1. Get your merchant account from https://www.segpay.com/
+  2. Replace MERCHANT_ID with your credentials
+  3. Replace the URL in the button onclick with your Segpay payment link
+-->
+<button onclick="window.location.href='https://www.segpay.com/billing/checkout?merchant=MERCHANT_ID&product_id=PRO_MEMBERSHIP&amount=29.00&currency=USD'">
+  Subscribe to Pro - $29/month
+</button>
+
+<!-- JAVASCRIPT PAYMENT HANDLER (Optional) -->
+<script>
+  function initiatePayment(tier) {
+    // Get user's payment processor preference from localStorage
+    const processor = localStorage.getItem('payment-processor') || 'ccbill';
+    
+    const paymentLinks = {
+      pro: {
+        ccbill: 'https://checkout.ccbill.com/checkout?merchant=YOUR_MERCHANT_ID&price=29.00',
+        segpay: 'https://www.segpay.com/billing/checkout?merchant=YOUR_MERCHANT_ID&amount=29.00'
+      },
+      elite: {
+        ccbill: 'https://checkout.ccbill.com/checkout?merchant=YOUR_MERCHANT_ID&price=59.00',
+        segpay: 'https://www.segpay.com/billing/checkout?merchant=YOUR_MERCHANT_ID&amount=59.00'
+      }
+    };
+    
+    if (paymentLinks[tier] && paymentLinks[tier][processor]) {
+      window.location.href = paymentLinks[tier][processor];
+    } else {
+      alert('Payment system not configured. Please contact support.');
+    }
+  }
+</script>
+
+<!-- UPDATED BUTTON EXAMPLES -->
+<button onclick="initiatePayment('pro')">Upgrade to Pro - $29/month</button>
+<button onclick="initiatePayment('elite')">Go Elite - $59/month</button>
+
+<!-- 
+  WEBHOOK HANDLING (Backend Required)
+  
+  After payment, your processor will send a webhook to confirm the transaction.
+  You'll need a backend server to:
+  
+  1. Receive webhook from CCBill/Segpay
+  2. Verify the payment
+  3. Update user's membership status in database
+  4. Grant access to locked content
+  
+  Example webhook endpoint: /api/payment-webhook
+  
+  Webhook will contain:
+  - Customer ID
+  - Transaction ID
+  - Amount
+  - Status (success/failed/refunded)
+  - Subscription details
+-->
