@@ -1,40 +1,43 @@
+const API_URL = "YOUR_VERCEL_BACKEND_URL";
+
 document.addEventListener('DOMContentLoaded', () => {
     const ageGate = document.getElementById('age-gate');
     const btnYes = document.querySelector('.btn-yes');
     const btnNo = document.querySelector('.btn-no');
 
-    // Check if age is already verified
-    if (localStorage.getItem('age-verified') === 'true') {
-        if (ageGate) ageGate.style.display = 'none';
+    if (localStorage.getItem('age-verified') === 'true' && ageGate) {
+        ageGate.style.display = 'none';
     }
 
-    if (btnYes) {
-        btnYes.addEventListener('click', () => {
-            localStorage.setItem('age-verified', 'true');
-            ageGate.style.opacity = '0';
-            setTimeout(() => {
-                ageGate.style.display = 'none';
-            }, 500);
-        });
-    }
+    btnYes?.addEventListener('click', () => {
+        localStorage.setItem('age-verified', 'true');
+        ageGate.style.display = 'none';
+    });
 
-    if (btnNo) {
-        btnNo.addEventListener('click', () => {
-            window.location.href = 'https://www.google.com';
-        });
-    }
+    btnNo?.addEventListener('click', () => {
+        window.location.href = 'https://www.google.com';
+    });
 
-    // Handle locked content clicks
-    const gridItems = document.querySelectorAll('.grid-item');
-    gridItems.forEach(item => {
+    document.querySelectorAll('.grid-item').forEach(item => {
         item.addEventListener('click', () => {
             if (item.querySelector('.locked')) {
-                alert('This content is exclusive to Pro members. Please upgrade your plan to unlock.');
-                const pricingSection = document.querySelector('.pricing');
-                if (pricingSection) {
-                    pricingSection.scrollIntoView({ behavior: 'smooth' });
-                }
+                document.querySelector('.pricing')?.scrollIntoView({behavior:'smooth'});
             }
+        });
+    });
+
+    document.querySelectorAll('.pricing .card button').forEach(button => {
+        button.addEventListener('click', async () => {
+            if (!button.textContent.includes('Upgrade') && !button.textContent.includes('Elite')) return;
+
+            const response = await fetch(`${API_URL}/api/paypal/create-subscription`, {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({plan: button.textContent})
+            });
+
+            const data = await response.json();
+            if (data.approval_url) window.location.href = data.approval_url;
         });
     });
 });
