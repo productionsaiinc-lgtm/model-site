@@ -6,120 +6,47 @@
   <title>Nova Studio | Exclusive Content</title>
   <link rel="stylesheet" href="style.css"/>
 </head>
-
 <body>
 
-  <!-- Age Gate Overlay -->
-  <div id="age-gate">
-    <div class="age-gate-content">
-      <h2>18+ ADULT CONTENT</h2>
-      <p>This website contains sexually explicit material. You must be at least 18 years of age to enter.</p>
-      <div class="age-gate-buttons">
-        <button class="btn-yes">I AM 18+</button>
-        <button class="btn-no">EXIT</button>
-      </div>
+<div id="age-gate">
+  <div class="age-gate-content">
+    <h2>18+ ADULT CONTENT</h2>
+    <p>This website contains sexually explicit material. You must be at least 18 years of age to enter.</p>
+    <div class="age-gate-buttons">
+      <button class="btn-yes">I AM 18+</button>
+      <button class="btn-no">EXIT</button>
     </div>
   </div>
+</div>
 
-  <header class="hero">
-    <nav>
-      <h1>Nova Studio</h1>
-      <ul>
-        <li><a href="#home">Home</a></li>
-        <li><a href="#gallery">Gallery</a></li>
-        <li><a href="#pricing">Premium</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
+<header class="hero">
+<nav><h1>Nova Studio</h1></nav>
+</header>
 
-    <div class="hero-content">
-      <h2>Exclusive Experience</h2>
-      <p>Premium digital assets and uncensored visuals for elite members.</p>
-      <button onclick="document.querySelector('.gallery').scrollIntoView({behavior: 'smooth'})">Explore Gallery</button>
-    </div>
-  </header>
+<section id="account">
+<h2>Member Login</h2>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+<button id="login-btn">Login</button>
+<button id="signup-btn">Create Account</button>
+</section>
 
-  <section id="gallery" class="gallery">
-    <h2>Featured Collection</h2>
+<section id="pricing" class="pricing">
+<h2>Access Plans</h2>
+<div class="cards">
+<div class="card"><h3>Basic Access</h3><button>Current Plan</button></div>
+<div class="card highlight"><h3>Pro Membership</h3><button>Upgrade Now</button></div>
+<div class="card"><h3>Elite Pass</h3><button>Go Elite</button></div>
+</div>
+</section>
 
-    <div class="grid">
-      <!-- Public Photos -->
-      <div class="grid-item">
-        <img src="images/model-photo-1.jpg" alt="Model Photo 1" />
-        <div class="overlay"><span>Preview</span></div>
-      </div>
-      <div class="grid-item">
-        <img src="images/model-photo-2.jpg" alt="Model Photo 2" />
-        <div class="overlay"><span>Preview</span></div>
-      </div>
-      <div class="grid-item">
-        <img src="images/model-photo-3.jpg" alt="Model Photo 3" />
-        <div class="overlay"><span>Preview</span></div>
-      </div>
-      <div class="grid-item">
-        <img src="images/model-photo-4.jpg" alt="Model Photo 4" />
-        <div class="overlay"><span>Preview</span></div>
-      </div>
+<footer>© 2026 Nova Studio</footer>
 
-      <!-- Locked Premium Content -->
-      <div class="grid-item">
-        <div class="lock-icon">🔒</div>
-        <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d" class="locked" alt="Locked Content" />
-        <div class="overlay"><span>Unlock for $29</span></div>
-      </div>
-      <div class="grid-item">
-        <div class="lock-icon">🔒</div>
-        <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2" class="locked" alt="Locked Content" />
-        <div class="overlay"><span>Unlock for $29</span></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="pricing" class="pricing">
-    <h2>Access Plans</h2>
-
-    <div class="cards">
-      <div class="card">
-        <h3>Basic Access</h3>
-        <div class="price">Free</div>
-        <ul>
-          <li>Public Previews</li>
-          <li>Basic Support</li>
-        </ul>
-        <button>Current Plan</button>
-      </div>
-
-      <div class="card highlight">
-        <h3>Pro Membership</h3>
-        <div class="price">$29/mo</div>
-        <ul>
-          <li>Uncensored Gallery</li>
-          <li>HD Downloads</li>
-          <li>Priority Support</li>
-          <li>Exclusive Updates</li>
-        </ul>
-        <button>Upgrade Now</button>
-      </div>
-
-      <div class="card">
-        <h3>Elite Pass</h3>
-        <div class="price">$59/mo</div>
-        <ul>
-          <li>Commercial License</li>
-          <li>Custom Requests</li>
-          <li>Direct Messaging</li>
-          <li>24/7 VIP Support</li>
-        </ul>
-        <button>Go Elite</button>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <p>© 2026 Nova Studio. All rights reserved. 18+ Only.</p>
-    <p style="font-size: 12px; margin-top: 10px;">By entering this site, you agree to our <a href="TERMS_OF_SERVICE.md" style="color: #bbb; text-decoration: none;">Terms of Service</a>, <a href="PRIVACY_POLICY.md" style="color: #bbb; text-decoration: none;">Privacy Policy</a>, and <a href="DMCA_POLICY.md" style="color: #bbb; text-decoration: none;">DMCA Policy</a>.</p>
-  </footer>
-
-  <script src="script.js"></script>
+<script src="auth-client.js"></script>
+<script src="script.js"></script>
+<script>
+login-btn.onclick = () => NovaAuth.login(email.value,password.value);
+signup-btn.onclick = () => NovaAuth.signup(email.value,password.value);
+</script>
 </body>
 </html>
