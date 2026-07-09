@@ -1,4 +1,4 @@
-const API_URL = "https://model-site-alpha.vercel.app";
+const API_URL = "https://nova-studio-api.onrender.com";
 document.addEventListener('DOMContentLoaded', () => {
     const ageGate = document.getElementById('age-gate');
     const btnYes = document.querySelector('.btn-yes');
