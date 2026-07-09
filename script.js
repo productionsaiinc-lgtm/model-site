@@ -1,5 +1,4 @@
-const API_URL = "YOUR_VERCEL_BACKEND_URL";
-
+const API_URL = "https://model-site-alpha.vercel.app";
 document.addEventListener('DOMContentLoaded', () => {
     const ageGate = document.getElementById('age-gate');
     const btnYes = document.querySelector('.btn-yes');
