@@ -1,0 +1,9 @@
+[
+  {
+    "id":1,
+    "fanId":101,
+    "creatorId":1,
+    "status":"active",
+    "expires":"2026-12-31"
+  }
+]
