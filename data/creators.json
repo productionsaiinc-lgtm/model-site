@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "username": "creator_one",
+    "displayName": "Creator One",
+    "bio": "Premium creator profile",
+    "subscription": 9.99,
+    "verified": true
+  },
+  {
+    "id": 2,
+    "username": "creator_two",
+    "displayName": "Creator Two",
+    "bio": "Exclusive member content",
+    "subscription": 14.99,
+    "verified": true
+  }
+]
