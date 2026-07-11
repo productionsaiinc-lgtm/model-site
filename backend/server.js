@@ -36,7 +36,6 @@ app.get("/api/health", (req, res) => {
     message: "Backend is running"
   });
 });
-
 app.use("/api/auth", authRoutes);
 app.use("/api/paypal", paypalRoutes);
 app.use("/api/member", memberRoutes);
@@ -47,5 +46,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({
     success: false,
     error: "Internal server error"
-export default app;
+  });
 });
+
+export default app;
