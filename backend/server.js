@@ -10,7 +10,6 @@ dotenv.config();
 
 const app = express();
 
-const PORT = process.env.PORT || 3000;
 
 app.use(
   cors({
@@ -48,9 +47,5 @@ app.use((err, req, res, next) => {
   res.status(500).json({
     success: false,
     error: "Internal server error"
-  });
-});
-
-app.listen(PORT, () => {
-  console.log(`Nova Studio API running on port ${PORT}`);
+export default app;
 });
