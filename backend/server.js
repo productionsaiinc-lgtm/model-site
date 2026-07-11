@@ -5,11 +5,12 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/auth.js";
 import paypalRoutes from "./routes/paypal.js";
 import memberRoutes from "./routes/member.js";
+import creatorRoutes from "./routes/creator.js";
+
 
 dotenv.config();
 
 const app = express();
-
 
 app.use(
   cors({
@@ -36,9 +37,11 @@ app.get("/api/health", (req, res) => {
     message: "Backend is running"
   });
 });
+
 app.use("/api/auth", authRoutes);
 app.use("/api/paypal", paypalRoutes);
 app.use("/api/member", memberRoutes);
+app.use("/api/creator", creatorRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err);
