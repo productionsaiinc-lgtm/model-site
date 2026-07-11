@@ -7,6 +7,7 @@ import paypalRoutes from "./routes/paypal.js";
 import memberRoutes from "./routes/member.js";
 import creatorRoutes from "./routes/creator.js";
 import userRoutes from "./routes/users.js";
+import uploadRoutes from "./routes/uploads-secure.js";
 
 dotenv.config();
 
@@ -14,9 +15,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: [
-      "https://productionsaiinc-lgtm.github.io"
-    ],
+    origin: ["https://productionsaiinc-lgtm.github.io"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
   })
@@ -43,6 +42,7 @@ app.use("/api/paypal", paypalRoutes);
 app.use("/api/member", memberRoutes);
 app.use("/api/creator", creatorRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/uploads", uploadRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err);
