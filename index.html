@@ -6,12 +6,18 @@
   <title>Nova Studio | Exclusive Content</title>
   <link rel="stylesheet" href="style.css"/>
 </head>
+
 <body>
 
+<!-- AGE GATE -->
 <div id="age-gate">
   <div class="age-gate-content">
     <h2>18+ ADULT CONTENT</h2>
-    <p>This website contains sexually explicit material. You must be at least 18 years of age to enter.</p>
+    <p>
+      This website contains sexually explicit material.
+      You must be at least 18 years of age to enter.
+    </p>
+
     <div class="age-gate-buttons">
       <button class="btn-yes">I AM 18+</button>
       <button class="btn-no">EXIT</button>
@@ -19,54 +25,213 @@
   </div>
 </div>
 
+
+<!-- HEADER -->
 <header class="hero">
-<nav><h1>Nova Studio</h1></nav>
+  <nav>
+    <h1>Nova Studio</h1>
+  </nav>
 </header>
 
+
+<!-- LOGIN -->
 <section id="account">
-<h2>Member Login</h2>
-<input id="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-<button id="login-btn">Login</button>
-<button id="signup-btn">Create Account</button>
+
+  <h2>Member Login</h2>
+
+  <input 
+    id="email"
+    type="email"
+    placeholder="Email"
+  >
+
+  <input 
+    id="password"
+    type="password"
+    placeholder="Password"
+  >
+
+  <button id="login-btn">
+    Login
+  </button>
+
+  <button id="signup-btn">
+    Create Account
+  </button>
+
 </section>
 
+
+<!-- PRICING -->
 <section id="pricing" class="pricing">
-<h2>Access Plans</h2>
-<div class="cards">
-<div class="card"><h3>Basic Access</h3><button>Current Plan</button></div>
-<div class="card highlight"><h3>Pro Membership</h3><button>Upgrade Now</button></div>
-<div class="card"><h3>Elite Pass</h3><button>Go Elite</button></div>
-</div>
+
+  <h2>Access Plans</h2>
+
+  <div class="cards">
+
+    <div class="card">
+      <h3>Basic Access</h3>
+      <button>
+        Current Plan
+      </button>
+    </div>
+
+
+    <div class="card highlight">
+
+      <h3>Pro Membership</h3>
+
+      <button>
+        Upgrade Now
+      </button>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>Elite Pass</h3>
+
+      <button>
+        Go Elite
+      </button>
+
+    </div>
+
+  </div>
+
 </section>
 
-<footer>© 2026 Nova Studio</footer>
 
+<!-- FOOTER -->
+<footer>
+  © 2026 Nova Studio
+</footer>
+
+
+
+<!-- SCRIPTS -->
 <script src="auth-client.js"></script>
 <script src="script.js"></script>
+
+
 <script>
+
+const loginBtn = document.getElementById("login-btn");
+const signupBtn = document.getElementById("signup-btn");
+
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+
+
+// LOGIN
+
 loginBtn.addEventListener("click", async () => {
-  const result = await NovaAuth.login(email.value, password.value);
+
+  const result = await NovaAuth.login(
+    emailInput.value,
+    passwordInput.value
+  );
+
 
   console.log(result);
 
+
   if (result.success) {
+
     localStorage.setItem(
       "session",
       JSON.stringify(result.session)
     );
+
 
     localStorage.setItem(
       "user",
       JSON.stringify(result.user)
     );
 
+
     alert("Login successful");
+
     window.location.reload();
+
+
   } else {
+
     alert(result.error || "Login failed");
+
   }
+
 });
+
+
+
+// SIGNUP
+
+signupBtn.addEventListener("click", async () => {
+
+
+  const result = await NovaAuth.signup(
+    emailInput.value,
+    passwordInput.value
+  );
+
+
+  console.log(result);
+
+
+  if (result.success) {
+
+    alert("Account created");
+
+  } else {
+
+    alert(result.error || "Signup failed");
+
+  }
+
+
+});
+
+
+
+// AGE GATE
+
+const ageGate = document.getElementById("age-gate");
+const yesBtn = document.querySelector(".btn-yes");
+const noBtn = document.querySelector(".btn-no");
+
+
+yesBtn.addEventListener("click", () => {
+
+  localStorage.setItem(
+    "age_verified",
+    "true"
+  );
+
+  ageGate.style.display = "none";
+
+});
+
+
+noBtn.addEventListener("click", () => {
+
+  window.location.href = "https://www.google.com";
+
+});
+
+
+// Remember age verification
+
+if(localStorage.getItem("age_verified") === "true") {
+
+  ageGate.style.display = "none";
+
+}
+
+
 </script>
+
+
 </body>
 </html>
