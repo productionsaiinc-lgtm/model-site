@@ -45,23 +45,27 @@
 <script src="auth-client.js"></script>
 <script src="script.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const email = document.getElementById("email");
-  const password = document.getElementById("password");
-  const loginBtn = document.getElementById("login-btn");
-  const signupBtn = document.getElementById("signup-btn");
+loginBtn.addEventListener("click", async () => {
+  const result = await NovaAuth.login(email.value, password.value);
 
-  loginBtn.addEventListener("click", async () => {
-    const result = await NovaAuth.login(email.value, password.value);
-    console.log(result);
-    alert(result.message || "Login complete");
-  });
+  console.log(result);
 
-  signupBtn.addEventListener("click", async () => {
-    const result = await NovaAuth.signup(email.value, password.value);
-    console.log(result);
-    alert(result.message || "Account created");
-  });
+  if (result.success) {
+    localStorage.setItem(
+      "session",
+      JSON.stringify(result.session)
+    );
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify(result.user)
+    );
+
+    alert("Login successful");
+    window.location.reload();
+  } else {
+    alert(result.error || "Login failed");
+  }
 });
 </script>
 </body>
