@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "email": "creator@example.com",
+    "role": "creator",
+    "verified": true
+  },
+  {
+    "id": 2,
+    "email": "fan@example.com",
+    "role": "fan",
+    "verified": true
+  }
+]
