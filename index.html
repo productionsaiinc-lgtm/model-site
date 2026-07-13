@@ -16,14 +16,15 @@
  </div>
 </div>
 
-<header>
- <h1>Nova Studio</h1>
-	 <nav>
-	  <a href="#gallery">Gallery</a>
-	  <a href="#plans">Memberships</a>
-	  <a href="frontend/login.html">Login</a>
-	 </nav>
-</header>
+	<header>
+	 <h1>Nova Studio</h1>
+		 <nav>
+		  <a href="#gallery">Gallery</a>
+		  <a href="#plans">Memberships</a>
+		  <a id="auth-link" href="frontend/login.html">Login</a>
+		  <span id="user-info" style="display:none; color:#aaa; margin-left:20px;"></span>
+		 </nav>
+	</header>
 
 	<section class="hero">
 	 <h2>Nova Studio</h2>
@@ -51,14 +52,18 @@
 </div>
 </section>
 
-	<section id="login" class="section">
-	<h2>Account</h2>
-	<p>Sign in or create a new account to manage your membership.</p>
-	<div style="margin-top: 20px;">
-		<button id="login-btn" onclick="location.href='frontend/login.html'">Login</button>
-		<button id="signup-btn" onclick="location.href='frontend/signup.html'">Create Account</button>
-	</div>
-	</section>
+		<section id="login" class="section">
+		<h2>Account</h2>
+		<p id="account-message">Sign in or create a new account to manage your membership.</p>
+		<div id="auth-buttons" style="margin-top: 20px;">
+			<button id="login-btn" onclick="location.href='frontend/login.html'">Login</button>
+			<button id="signup-btn" onclick="location.href='frontend/signup.html'">Create Account</button>
+		</div>
+		<div id="logged-in-section" style="display:none; margin-top:20px;">
+			<p id="welcome-message" style="font-size:18px; margin-bottom:15px;"></p>
+			<button onclick="logout()" style="background:#ff3366;">Logout</button>
+		</div>
+		</section>
 
 <footer>© 2026 Nova Studio</footer>
 <script src="auth-client.js"></script>
@@ -66,6 +71,39 @@
 <script>
 function verifyAge(){localStorage.setItem('age-verified','true');document.getElementById('age-gate').style.display='none'}
 if(localStorage.getItem('age-verified') === 'true') document.getElementById('age-gate').style.display='none';
+
+function checkUserLogin() {
+  const userId = localStorage.getItem('user_id');
+  const userEmail = localStorage.getItem('user_email');
+  const authLink = document.getElementById('auth-link');
+  const userInfo = document.getElementById('user-info');
+  const authButtons = document.getElementById('auth-buttons');
+  const loggedInSection = document.getElementById('logged-in-section');
+  const welcomeMessage = document.getElementById('welcome-message');
+  
+  if (userId && userEmail) {
+    authLink.style.display = 'none';
+    userInfo.style.display = 'inline';
+    userInfo.textContent = userEmail;
+    authButtons.style.display = 'none';
+    loggedInSection.style.display = 'block';
+    welcomeMessage.textContent = 'Welcome back, ' + userEmail + '!';
+  } else {
+    authLink.style.display = 'inline';
+    userInfo.style.display = 'none';
+    authButtons.style.display = 'block';
+    loggedInSection.style.display = 'none';
+  }
+}
+
+function logout() {
+  localStorage.removeItem('auth_token');
+  localStorage.removeItem('user_id');
+  localStorage.removeItem('user_email');
+  window.location.href = 'index.html';
+}
+
+window.addEventListener('load', checkUserLogin);
 </script>
 </body>
 </html>

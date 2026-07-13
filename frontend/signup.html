@@ -218,10 +218,13 @@
         
         const data = await response.json();
         if (data.success) {
-          successDiv.textContent = 'Account created! Redirecting to login...';
+          localStorage.setItem('auth_token', data.user?.id || '');
+          localStorage.setItem('user_id', data.user?.id || '');
+          localStorage.setItem('user_email', email);
+          successDiv.textContent = 'Account created! Redirecting to homepage...';
           successDiv.classList.add('show');
           errorDiv.classList.remove('show');
-          setTimeout(() => window.location.href = 'login.html', 2000);
+          setTimeout(() => window.location.href = '../index.html', 2000);
         } else {
           console.log('Signup error response:', data);
           const errorMsg = data.error || data.message || 'Signup failed. Please try again.';
