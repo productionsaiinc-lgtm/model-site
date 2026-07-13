@@ -32,17 +32,25 @@
 	 <button onclick="location.href='#plans'">Join Now</button>
 	</section>
 
-	<section id="gallery" class="section">
-	<h2>Exclusive Gallery</h2>
-	<div class="gallery-grid">
-	 <div class="gallery-item">
-	  <img src="images/hero.jpg" alt="Exclusive Content">
-	 </div>
-	 <div class="gallery-item">
-	  <img src="images/photo2.jpg" alt="Exclusive Content">
-	 </div>
-	</div>
-	</section>
+		<section id="gallery" class="section">
+		<h2>Exclusive Gallery</h2>
+		<div class="gallery-grid">
+		 <div class="gallery-item">
+		  <img src="images/hero.jpg" alt="Exclusive Content">
+		 </div>
+		 <div class="gallery-item">
+		  <img src="images/photo2.jpg" alt="Exclusive Content">
+		 </div>
+		</div>
+		</section>
+
+		<section id="premium-gallery" class="section dark">
+		<h2>Premium Content</h2>
+		<p class="premium-section-title" id="premium-message">Subscribe to unlock exclusive premium photos</p>
+		<div class="gallery-grid" id="premium-grid">
+		 <!-- Premium images will be added here dynamically -->
+		</div>
+		</section>
 
 <section id="plans" class="section dark">
 <h2>Membership Plans</h2>
@@ -134,7 +142,54 @@ function logout() {
   window.location.href = 'index.html';
 }
 
-window.addEventListener('load', checkUserLogin);
+function loadPremiumGallery() {
+  const userId = localStorage.getItem('user_id');
+  const premiumGrid = document.getElementById('premium-grid');
+  const premiumMessage = document.getElementById('premium-message');
+  
+  // List of premium images (add more as you upload them)
+  const premiumImages = [
+    { src: 'images/premium1.jpg', alt: 'Premium Content 1' },
+    { src: 'images/premium2.jpg', alt: 'Premium Content 2' },
+    { src: 'images/premium3.jpg', alt: 'Premium Content 3' },
+    { src: 'images/premium4.jpg', alt: 'Premium Content 4' }
+  ];
+  
+  premiumGrid.innerHTML = '';
+  const isSubscribed = userId ? true : false;
+  
+  if (isSubscribed) {
+    premiumMessage.textContent = 'Welcome! Enjoy your exclusive premium content';
+  } else {
+    premiumMessage.textContent = 'Subscribe to unlock exclusive premium photos';
+  }
+  
+  premiumImages.forEach((image) => {
+    const div = document.createElement('div');
+    div.className = 'gallery-item premium-item';
+    
+    if (!isSubscribed) {
+      div.classList.add('locked');
+      div.onclick = () => {
+        alert('Please subscribe to view premium content');
+        window.location.href = '#plans';
+      };
+    }
+    
+    const img = document.createElement('img');
+    img.src = image.src;
+    img.alt = image.alt;
+    img.onerror = () => { div.style.display = 'none'; };
+    
+    div.appendChild(img);
+    premiumGrid.appendChild(div);
+  });
+}
+
+window.addEventListener('load', () => {
+  checkUserLogin();
+  loadPremiumGallery();
+});
 
 function handleSubscribe(plan) {
   const userId = localStorage.getItem('user_id');
