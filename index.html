@@ -194,6 +194,24 @@ function loadPremiumGallery() {
     }
     
     div.appendChild(media);
+    
+    if (isSubscribed) {
+      const downloadBtn = document.createElement('button');
+      downloadBtn.className = 'download-btn';
+      downloadBtn.textContent = 'Download';
+      downloadBtn.onclick = (e) => {
+        e.stopPropagation();
+        const link = document.createElement('a');
+        link.href = item.src;
+        link.download = item.alt;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      };
+      div.appendChild(downloadBtn);
+    }
+    
+    media.addEventListener('contextmenu', (e) => e.preventDefault());
     premiumGrid.appendChild(div);
   });
 }
