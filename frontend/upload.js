@@ -2,7 +2,7 @@ async function createUpload(){
  const title = document.getElementById('upload-title').value;
  const media = document.getElementById('upload-media').value;
 
- const response = await fetch('https://nova-studio-backend.vercel.app/api/uploads', {
+ const response = await fetch('https://model-site-alpha.vercel.app/api/uploads', {
   method:'POST',
   headers:{
    'Content-Type':'application/json',

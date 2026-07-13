@@ -15,7 +15,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["https://productionsaiinc-lgtm.github.io"],
+    origin: ["https://productionsaiinc-lgtm.github.io", "https://productionsaiinc-lgtm.github.io/model-site"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
   })

@@ -27,9 +27,9 @@ export async function createSubscription(planId) {
       brand_name: "Nova Studio",
       user_action: "SUBSCRIBE",
       return_url:
-        `${process.env.FRONTEND_URL}/account.html?payment=success`,
+        `${process.env.FRONTEND_URL}/frontend/account.html?payment=success`,
       cancel_url:
-        `${process.env.FRONTEND_URL}/pricing.html?payment=cancelled`
+        `${process.env.FRONTEND_URL}/index.html#plans?payment=cancelled`
     }
   });
 
