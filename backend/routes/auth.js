@@ -6,6 +6,16 @@ const router = express.Router();
 router.post("/signup", async (req, res) => {
   try {
     const { email, password } = req.body;
+    
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({ success: false, error: "Email and password are required" });
+    }
+    
+    if (password.length < 6) {
+      return res.status(400).json({ success: false, error: "Password must be at least 6 characters" });
+    }
+    
     const { data, error } = await supabase.auth.admin.createUser({
       email,
       password,
@@ -42,6 +52,12 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
+    
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({ success: false, error: "Email and password are required" });
+    }
+    
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password

@@ -223,7 +223,9 @@
           errorDiv.classList.remove('show');
           setTimeout(() => window.location.href = 'login.html', 2000);
         } else {
-          errorDiv.textContent = data.error || 'Signup failed. Please try again.';
+          console.log('Signup error response:', data);
+          const errorMsg = data.error || data.message || 'Signup failed. Please try again.';
+          errorDiv.textContent = errorMsg;
           errorDiv.classList.add('show');
         }
       } catch (error) {
