@@ -150,9 +150,17 @@ function handleSubscribe(plan) {
     return;
   }
   
-  // For now, show a message. Later integrate with PayPal or payment processor
-  alert('Subscription to ' + plan.toUpperCase() + ' plan initiated. Payment processing coming soon!');
-  // TODO: Integrate with PayPal API or your payment processor
+  // PayPal payment links
+  const paypalLinks = {
+    monthly: 'https://www.paypal.com/ncp/payment/MV5N755F6CCRC',
+    vip: 'https://www.paypal.com/ncp/payment/2HV82BCM93Q7U'
+  };
+  
+  if (paypalLinks[plan]) {
+    window.location.href = paypalLinks[plan];
+  } else {
+    alert('Invalid plan selected.');
+  }
 }
 </script>
 </body>
