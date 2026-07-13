@@ -241,18 +241,37 @@ router.get("/dashboard/:userId", async (req, res) => {
       });
     }
 
-    // Fetch profile
+    // Fetch profile (gracefully handle missing profile)
     const { data: profileData, error: profileError } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", userId)
       .single();
 
-    if (profileError) {
-      return res.status(400).json({
-        success: false,
-        error: profileError.message
-      });
+    // If profile doesn't exist, create a default one
+    let profile = profileData;
+    if (profileError || !profileData) {
+      // Try to create a default profile
+      const { data: newProfile, error: createError } = await supabase
+        .from("profiles")
+        .insert([{ id: userId, email: "", full_name: "", avatar_url: null, bio: "" }])
+        .select()
+        .single();
+
+      if (createError && createError.code !== "23505") {
+        // 23505 is unique constraint violation (profile already exists)
+        console.error("Error creating profile:", createError);
+      }
+
+      profile = newProfile || {
+        id: userId,
+        email: "",
+        full_name: "",
+        avatar_url: null,
+        bio: "",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
     }
 
     // Fetch subscription
@@ -290,7 +309,7 @@ router.get("/dashboard/:userId", async (req, res) => {
     res.json({
       success: true,
       dashboard: {
-        profile: profileData,
+        profile: profile,
         subscription: subscription,
         is_subscribed: subscription?.status === "active",
         membership_tiers: tiersData

@@ -248,10 +248,21 @@
           subscription = data.dashboard.subscription;
           tiers = data.dashboard.membership_tiers;
           displayData();
+        } else {
+          console.error('Dashboard error:', data.error);
+          showError('Failed to load dashboard: ' + (data.error || 'Unknown error'));
         }
       } catch (error) {
         console.error('Error:', error);
+        showError('Network error: ' + error.message);
       }
+    }
+
+    function showError(message) {
+      const errorDiv = document.createElement('div');
+      errorDiv.style.cssText = 'background: #fee; border: 1px solid #fcc; color: #c33; padding: 12px; border-radius: 8px; margin: 20px; font-size: 14px;';
+      errorDiv.textContent = message;
+      document.body.insertBefore(errorDiv, document.body.firstChild);
     }
 
     function displayData() {

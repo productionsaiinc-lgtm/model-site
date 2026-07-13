@@ -187,6 +187,18 @@
       const password = document.getElementById('password').value;
       const confirmPassword = document.getElementById('confirmPassword').value;
 
+      if (!email || !password || !confirmPassword) {
+        errorDiv.textContent = 'Please fill in all fields';
+        errorDiv.classList.add('show');
+        return;
+      }
+
+      if (password.length < 8) {
+        errorDiv.textContent = 'Password must be at least 8 characters';
+        errorDiv.classList.add('show');
+        return;
+      }
+
       if (password !== confirmPassword) {
         errorDiv.textContent = 'Passwords do not match';
         errorDiv.classList.add('show');
@@ -199,17 +211,23 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        
         const data = await response.json();
         if (data.success) {
-          successDiv.textContent = 'Account created! Redirecting...';
+          successDiv.textContent = 'Account created! Redirecting to login...';
           successDiv.classList.add('show');
+          errorDiv.classList.remove('show');
           setTimeout(() => window.location.href = 'login.html', 2000);
         } else {
-          errorDiv.textContent = data.error || 'Signup failed';
+          errorDiv.textContent = data.error || 'Signup failed. Please try again.';
           errorDiv.classList.add('show');
         }
       } catch (error) {
-        errorDiv.textContent = 'Network error';
+        errorDiv.textContent = 'Network error: ' + error.message + '. Please check the backend URL.';
         errorDiv.classList.add('show');
       }
     });

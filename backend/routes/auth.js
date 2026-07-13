@@ -14,6 +14,25 @@ router.post("/signup", async (req, res) => {
 
     if (error) throw error;
 
+    // Create profile for the new user
+    const userId = data.user.id;
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .insert([
+        {
+          id: userId,
+          email: email,
+          full_name: "",
+          avatar_url: null,
+          bio: ""
+        }
+      ]);
+
+    if (profileError) {
+      console.error("Error creating profile:", profileError);
+      // Don't throw - user auth was successful, profile creation is secondary
+    }
+
     res.json({ success: true, user: data.user });
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
@@ -29,6 +48,33 @@ router.post("/login", async (req, res) => {
     });
 
     if (error) throw error;
+
+    // Ensure profile exists for the user (in case it was created before profile table existed)
+    const userId = data.user.id;
+    const { data: existingProfile } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("id", userId)
+      .single();
+
+    if (!existingProfile) {
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .insert([
+          {
+            id: userId,
+            email: email,
+            full_name: "",
+            avatar_url: null,
+            bio: ""
+          }
+        ]);
+
+      if (profileError) {
+        console.error("Error creating profile on login:", profileError);
+        // Don't throw - user auth was successful, profile creation is secondary
+      }
+    }
 
     res.json({ success: true, session: data.session, user: data.user });
   } catch (error) {

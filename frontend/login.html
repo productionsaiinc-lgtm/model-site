@@ -159,23 +159,34 @@
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
 
+      if (!email || !password) {
+        errorDiv.textContent = 'Please enter both email and password';
+        errorDiv.classList.add('show');
+        return;
+      }
+
       try {
         const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        
         const data = await response.json();
-        if (data.success) {
+        if (data.success && data.session && data.user) {
           localStorage.setItem('auth_token', data.session.access_token);
           localStorage.setItem('user_id', data.user.id);
           window.location.href = 'account.html';
         } else {
-          errorDiv.textContent = data.error || 'Login failed';
+          errorDiv.textContent = data.error || 'Login failed. Please try again.';
           errorDiv.classList.add('show');
         }
       } catch (error) {
-        errorDiv.textContent = 'Network error';
+        errorDiv.textContent = 'Network error: ' + error.message + '. Please check the backend URL.';
         errorDiv.classList.add('show');
       }
     });
