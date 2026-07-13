@@ -157,7 +157,8 @@ function loadPremiumGallery() {
   ];
   
   premiumGrid.innerHTML = '';
-  const isSubscribed = userId ? true : false;
+  const membershipTier = localStorage.getItem('membership_tier');
+  const isSubscribed = membershipTier && (membershipTier === 'monthly' || membershipTier === 'vip');
   
   if (isSubscribed) {
     premiumMessage.textContent = 'Welcome! Enjoy your exclusive premium content and videos';

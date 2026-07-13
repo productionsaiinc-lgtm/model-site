@@ -219,6 +219,7 @@
           localStorage.setItem('auth_token', data.user?.id || '');
           localStorage.setItem('user_id', data.user?.id || '');
           localStorage.setItem('user_email', email);
+          localStorage.setItem('membership_tier', 'free');
           successDiv.textContent = 'Account created! Redirecting to homepage...';
           successDiv.classList.add('show');
           errorDiv.classList.remove('show');
