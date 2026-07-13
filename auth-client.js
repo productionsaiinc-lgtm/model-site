@@ -1,4 +1,4 @@
-const AUTH_API = "https://model-site-alpha.vercel.app/api/auth";
+const AUTH_API = "https://nova-studio-backend.vercel.app/api/auth";
 
 
 async function signup(email, password) {
