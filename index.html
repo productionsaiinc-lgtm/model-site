@@ -47,8 +47,39 @@
 <section id="plans" class="section dark">
 <h2>Membership Plans</h2>
 <div class="grid">
-<div class="card"><h3>Monthly</h3><p>$9.99/month</p><button>Subscribe</button></div>
-<div class="card"><h3>VIP</h3><p>$24.99/month</p><button>Subscribe</button></div>
+<div class="card">
+  <h3>Basic</h3>
+  <p style="font-size:24px; color:#ff3366; margin:10px 0;">Free</p>
+  <ul style="text-align:left; list-style:none; padding:0; margin:15px 0;">
+    <li>✓ Public gallery access</li>
+    <li>✓ Preview photos</li>
+    <li>✓ Community access</li>
+  </ul>
+  <button onclick="handleSubscribe('basic')" style="background:#666;">Current Plan</button>
+</div>
+<div class="card">
+  <h3>Monthly</h3>
+  <p style="font-size:24px; color:#ff3366; margin:10px 0;">$9.99/month</p>
+  <ul style="text-align:left; list-style:none; padding:0; margin:15px 0;">
+    <li>✓ Uncensored gallery</li>
+    <li>✓ HD photo downloads</li>
+    <li>✓ Priority support</li>
+    <li>✓ New content weekly</li>
+  </ul>
+  <button onclick="handleSubscribe('monthly')">Subscribe Now</button>
+</div>
+<div class="card">
+  <h3>VIP</h3>
+  <p style="font-size:24px; color:#ff3366; margin:10px 0;">$24.99/month</p>
+  <ul style="text-align:left; list-style:none; padding:0; margin:15px 0;">
+    <li>✓ Everything in Monthly</li>
+    <li>✓ Exclusive VIP content</li>
+    <li>✓ Direct messaging</li>
+    <li>✓ Custom requests</li>
+    <li>✓ Commercial license</li>
+  </ul>
+  <button onclick="handleSubscribe('vip')">Go VIP</button>
+</div>
 </div>
 </section>
 
@@ -104,6 +135,25 @@ function logout() {
 }
 
 window.addEventListener('load', checkUserLogin);
+
+function handleSubscribe(plan) {
+  const userId = localStorage.getItem('user_id');
+  
+  if (!userId) {
+    alert('Please log in or create an account first to subscribe.');
+    window.location.href = 'frontend/signup.html';
+    return;
+  }
+  
+  if (plan === 'basic') {
+    alert('You are already on the Basic (Free) plan.');
+    return;
+  }
+  
+  // For now, show a message. Later integrate with PayPal or payment processor
+  alert('Subscription to ' + plan.toUpperCase() + ' plan initiated. Payment processing coming soon!');
+  // TODO: Integrate with PayPal API or your payment processor
+}
 </script>
 </body>
 </html>
