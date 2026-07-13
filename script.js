@@ -1,7 +1,7 @@
 const API_URL = "https://nova-studio-backend.vercel.app";
 document.addEventListener('DOMContentLoaded', () => {
     const ageGate = document.getElementById('age-gate');
-    const btnYes = document.querySelector('.btn-yes');
+    const btnYes = document.querySelector('.btn-yes') || document.querySelector('#age-gate button');
     const btnNo = document.querySelector('.btn-no');
 
     if (localStorage.getItem('age-verified') === 'true' && ageGate) {
