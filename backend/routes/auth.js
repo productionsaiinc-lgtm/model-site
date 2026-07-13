@@ -22,7 +22,10 @@ router.post("/signup", async (req, res) => {
       email_confirm: true
     });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase signup error:', error);
+      throw error;
+    }
 
     // Create profile for the new user
     const userId = data.user.id;
@@ -63,7 +66,10 @@ router.post("/login", async (req, res) => {
       password
     });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase login error:', error);
+      throw error;
+    }
 
     // Ensure profile exists for the user (in case it was created before profile table existed)
     const userId = data.user.id;
