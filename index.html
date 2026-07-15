@@ -217,9 +217,25 @@ function loadPremiumGallery() {
   });
 }
 
+async function refreshMembershipStatus() {
+  const userId = localStorage.getItem('user_id');
+  if (!userId) return;
+  
+  try {
+    const response = await fetch(`https://model-site-alpha.vercel.app/api/member/profile/${userId}`);
+    const data = await response.json();
+    if (data.success && data.profile && data.profile.membership_tier) {
+      localStorage.setItem('membership_tier', data.profile.membership_tier);
+    }
+  } catch (error) {
+    console.error('Error refreshing membership status:', error);
+  }
+}
+
 window.addEventListener('load', () => {
   checkUserLogin();
-  loadPremiumGallery();
+  refreshMembershipStatus();
+  setTimeout(() => loadPremiumGallery(), 100);
 });
 
 function handleSubscribe(plan) {

@@ -37,7 +37,8 @@ router.post("/signup", async (req, res) => {
           email: email,
           full_name: "",
           avatar_url: null,
-          bio: ""
+          bio: "",
+          membership_tier: "free"
         }
       ]);
 
@@ -46,7 +47,7 @@ router.post("/signup", async (req, res) => {
       // Don't throw - user auth was successful, profile creation is secondary
     }
 
-    res.json({ success: true, user: data.user });
+    res.json({ success: true, user: { ...data.user, membership_tier: "free" } });
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
   }
@@ -71,14 +72,15 @@ router.post("/login", async (req, res) => {
       throw error;
     }
 
-    // Ensure profile exists for the user (in case it was created before profile table existed)
+    // Fetch profile with membership tier
     const userId = data.user.id;
     const { data: existingProfile } = await supabase
       .from("profiles")
-      .select("id")
+      .select("id, membership_tier")
       .eq("id", userId)
       .single();
 
+    let membershipTier = "free";
     if (!existingProfile) {
       const { error: profileError } = await supabase
         .from("profiles")
@@ -88,17 +90,19 @@ router.post("/login", async (req, res) => {
             email: email,
             full_name: "",
             avatar_url: null,
-            bio: ""
+            bio: "",
+            membership_tier: "free"
           }
         ]);
 
       if (profileError) {
         console.error("Error creating profile on login:", profileError);
-        // Don't throw - user auth was successful, profile creation is secondary
       }
+    } else if (existingProfile.membership_tier) {
+      membershipTier = existingProfile.membership_tier;
     }
 
-    res.json({ success: true, session: data.session, user: data.user });
+    res.json({ success: true, session: data.session, user: { ...data.user, membership_tier: membershipTier } });
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
   }
