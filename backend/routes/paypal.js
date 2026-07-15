@@ -140,6 +140,39 @@ router.post("/cancel-subscription", async (req, res) => {
 });
 
 
+// TEST ROUTE: Simulate a successful VIP payment
+router.post("/test-vip-upgrade", async (req, res) => {
+  try {
+    const { userId } = req.body;
+    if (!userId) return res.status(400).json({ success: false, message: "User ID required" });
+
+    // 1. Create a dummy subscription record
+    const { error: subError } = await supabase
+      .from("subscriptions")
+      .insert({
+        user_id: userId,
+        paypal_subscription_id: "TEST_VIP_" + Date.now(),
+        plan_id: "2HV82BCM93Q7U",
+        status: "active",
+        activated_at: new Date().toISOString()
+      });
+
+    if (subError) throw subError;
+
+    // 2. Update user profile to VIP
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update({ membership_tier: "vip" })
+      .eq("id", userId);
+
+    if (profileError) throw profileError;
+
+    res.json({ success: true, message: "User upgraded to VIP successfully (TEST)" });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // Verify user subscription (for premium content access)
 router.get("/verify/:userId", async (req, res) => {
   try {
@@ -194,16 +227,39 @@ router.post("/webhook", async (req, res) => {
     console.log("PayPal Webhook Event:", event.event_type);
 
     // Handle subscription activated
-    if (event.event_type === "BILLING.SUBSCRIPTION.CREATED") {
+    if (event.event_type === "BILLING.SUBSCRIPTION.CREATED" || event.event_type === "BILLING.SUBSCRIPTION.ACTIVATED") {
       const subscriptionId = event.resource.id;
+      const planId = event.resource.plan_id;
+      
+      // Determine tier based on plan ID (You should map these to your PayPal Plan IDs)
+      // VIP Plan ID: 2HV82BCM93Q7U (from the link you provided)
+      // Monthly Plan ID: MV5N755F6CCRC (from the link you provided)
+      let tier = 'free';
+      if (planId === '2HV82BCM93Q7U') tier = 'vip';
+      else if (planId === 'MV5N755F6CCRC') tier = 'monthly';
 
-      const { error } = await supabase
+      // 1. Update subscription status
+      const { data: subData, error: subError } = await supabase
         .from("subscriptions")
         .update({ status: "active", activated_at: new Date().toISOString() })
-        .eq("paypal_subscription_id", subscriptionId);
+        .eq("paypal_subscription_id", subscriptionId)
+        .select();
 
-      if (error) {
-        console.error("Error updating subscription:", error);
+      if (subError) {
+        console.error("Error updating subscription:", subError);
+      }
+
+      // 2. Update user profile tier
+      if (subData && subData.length > 0) {
+        const userId = subData[0].user_id;
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .update({ membership_tier: tier })
+          .eq("id", userId);
+        
+        if (profileError) {
+          console.error("Error updating profile tier:", profileError);
+        }
       }
     }
 
