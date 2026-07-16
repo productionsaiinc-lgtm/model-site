@@ -19,7 +19,7 @@ router.get("/profile/:userId", async (req, res) => {
       .from("profiles")
       .select("*")
       .eq("id", userId)
-      .single();
+      .maybeSingle();
 
     if (error) {
       return res.status(400).json({
@@ -30,7 +30,11 @@ router.get("/profile/:userId", async (req, res) => {
 
     res.json({
       success: true,
-      profile: data
+      profile: data,
+      debug: {
+        found: !!data,
+        tier: data ? data.membership_tier : 'none'
+      }
     });
 
   } catch (error) {
