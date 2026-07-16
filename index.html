@@ -26,6 +26,16 @@
 		 </nav>
 	</header>
 
+	<!-- Debug Panel -->
+	<div id="debug-panel" style="display:none; position:fixed; bottom:10px; right:10px; background:#222; color:#0f0; padding:15px; border:1px solid #0f0; border-radius:5px; font-size:12px; font-family:monospace; z-index:9999; max-width:300px;">
+		<div><strong>DEBUG INFO</strong></div>
+		<div>User ID: <span id="debug-user-id">-</span></div>
+		<div>Email: <span id="debug-email">-</span></div>
+		<div>Tier (Local): <span id="debug-tier-local">-</span></div>
+		<div>Tier (DB): <span id="debug-tier-db">-</span></div>
+		<div><button onclick="toggleDebug()" style="margin-top:10px; background:#0f0; color:#000; border:none; padding:5px 10px; cursor:pointer;">Hide</button></div>
+	</div>
+
 	<section class="hero">
 	 <h2>Nova Studio</h2>
 	 <p>Unlock exclusive premium content and join the inner circle.</p>
@@ -226,16 +236,51 @@ async function refreshMembershipStatus() {
     const data = await response.json();
     if (data.success && data.profile && data.profile.membership_tier) {
       localStorage.setItem('membership_tier', data.profile.membership_tier);
+      updateDebugPanel();
     }
   } catch (error) {
     console.error('Error refreshing membership status:', error);
   }
 }
 
+function updateDebugPanel() {
+  const userId = localStorage.getItem('user_id');
+  const email = localStorage.getItem('user_email');
+  const tierLocal = localStorage.getItem('membership_tier');
+  
+  document.getElementById('debug-user-id').textContent = userId || 'Not logged in';
+  document.getElementById('debug-email').textContent = email || '-';
+  document.getElementById('debug-tier-local').textContent = tierLocal || 'free';
+}
+
+function toggleDebug() {
+  const panel = document.getElementById('debug-panel');
+  if (panel.style.display === 'none') {
+    panel.style.display = 'block';
+    updateDebugPanel();
+  } else {
+    panel.style.display = 'none';
+  }
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.key === 'd') {
+    e.preventDefault();
+    toggleDebug();
+  }
+});
+
 window.addEventListener('load', () => {
   checkUserLogin();
   refreshMembershipStatus();
   setTimeout(() => loadPremiumGallery(), 100);
+  updateDebugPanel();
+});
+
+// Force refresh on every page visit
+window.addEventListener('pageshow', () => {
+  refreshMembershipStatus();
+  loadPremiumGallery();
 });
 
 function handleSubscribe(plan) {
