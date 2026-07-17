@@ -180,7 +180,9 @@
           localStorage.setItem('user_id', data.user.id);
           localStorage.setItem('user_email', data.user.email);
           localStorage.setItem('membership_tier', data.user.membership_tier || 'free');
-          window.location.href = '../index.html';
+          
+          // Force a hard redirect to ensure the homepage refreshes and fetches the latest tier
+          window.location.href = '../index.html?refresh=' + Date.now();
         } else {
           errorDiv.textContent = data.error || 'Login failed. Please try again.';
           errorDiv.classList.add('show');

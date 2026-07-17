@@ -27,13 +27,18 @@
 	</header>
 
 	<!-- Debug Panel -->
-	<div id="debug-panel" style="display:none; position:fixed; bottom:10px; right:10px; background:#222; color:#0f0; padding:15px; border:1px solid #0f0; border-radius:5px; font-size:12px; font-family:monospace; z-index:9999; max-width:300px;">
+	<div id="debug-panel" style="display:none; position:fixed; bottom:10px; right:10px; background:#222; color:#0f0; padding:15px; border:1px solid #0f0; border-radius:5px; font-size:12px; font-family:monospace; z-index:9999; max-width:350px; overflow-y:auto; max-height:400px;">
 		<div><strong>DEBUG INFO</strong></div>
 		<div>User ID: <span id="debug-user-id">-</span></div>
 		<div>Email: <span id="debug-email">-</span></div>
 		<div>Tier (Local): <span id="debug-tier-local">-</span></div>
 		<div>Tier (DB): <span id="debug-tier-db">-</span></div>
-		<div><button onclick="toggleDebug()" style="margin-top:10px; background:#0f0; color:#000; border:none; padding:5px 10px; cursor:pointer;">Hide</button></div>
+		<div>Last Refresh: <span id="debug-last-refresh">-</span></div>
+		<div>API Status: <span id="debug-api-status">-</span></div>
+		<div style="margin-top:10px; border-top:1px solid #0f0; padding-top:10px;">
+			<button onclick="refreshMembershipStatus()" style="background:#0f0; color:#000; border:none; padding:5px 10px; cursor:pointer; margin-right:5px; font-size:11px;">Refresh Now</button>
+			<button onclick="toggleDebug()" style="background:#0f0; color:#000; border:none; padding:5px 10px; cursor:pointer; font-size:11px;">Hide</button>
+		</div>
 	</div>
 
 	<section class="hero">
@@ -153,6 +158,7 @@ function logout() {
   localStorage.removeItem('auth_token');
   localStorage.removeItem('user_id');
   localStorage.removeItem('user_email');
+  localStorage.removeItem('membership_tier');
   window.location.href = 'index.html';
 }
 
@@ -233,18 +239,37 @@ function loadPremiumGallery() {
 
 async function refreshMembershipStatus() {
   const userId = localStorage.getItem('user_id');
-  if (!userId) return;
+  if (!userId) {
+    updateDebugPanel();
+    return;
+  }
   
   try {
+    document.getElementById('debug-api-status').textContent = 'Fetching...';
     const response = await fetch(`https://model-site-alpha.vercel.app/api/member/profile/${userId}`);
     const data = await response.json();
+    
     if (data.success && data.profile && data.profile.membership_tier) {
-      localStorage.setItem('membership_tier', data.profile.membership_tier);
-      updateDebugPanel();
+      const newTier = data.profile.membership_tier;
+      const oldTier = localStorage.getItem('membership_tier');
+      
+      localStorage.setItem('membership_tier', newTier);
+      document.getElementById('debug-api-status').textContent = `Success (${response.status})`;
+      
+      // If tier changed, reload the gallery
+      if (oldTier !== newTier) {
+        console.log(`Membership tier updated: ${oldTier} → ${newTier}`);
+        loadPremiumGallery();
+      }
+    } else {
+      document.getElementById('debug-api-status').textContent = 'Error: No tier in response';
     }
   } catch (error) {
     console.error('Error refreshing membership status:', error);
+    document.getElementById('debug-api-status').textContent = `Error: ${error.message}`;
   }
+  
+  updateDebugPanel();
 }
 
 function updateDebugPanel() {
@@ -255,6 +280,7 @@ function updateDebugPanel() {
   document.getElementById('debug-user-id').textContent = userId || 'Not logged in';
   document.getElementById('debug-email').textContent = email || '-';
   document.getElementById('debug-tier-local').textContent = tierLocal || 'free';
+  document.getElementById('debug-last-refresh').textContent = new Date().toLocaleTimeString();
 }
 
 function toggleDebug() {
@@ -281,11 +307,19 @@ window.addEventListener('load', () => {
   updateDebugPanel();
 });
 
-// Force refresh on every page visit
+// Refresh on every page visit (including back button)
 window.addEventListener('pageshow', () => {
   refreshMembershipStatus();
   loadPremiumGallery();
 });
+
+// Also refresh every 5 seconds to catch updates
+setInterval(() => {
+  const userId = localStorage.getItem('user_id');
+  if (userId) {
+    refreshMembershipStatus();
+  }
+}, 5000);
 
 function handleSubscribe(plan) {
   const userId = localStorage.getItem('user_id');
